@@ -5,16 +5,19 @@ using UnityEngine;
 public class Nozzle : MonoBehaviour
 {
     [SerializeField] private GameObject foamPrefab;
+
     private bool moveDownwards, moveUpwards;
     private float nextFoamTime, timePassed;
     private Vector3 upPosition, downPosition;
+    private ParticleSystem ps;
     void Start()
     {
+        ps = GetComponentInChildren<ParticleSystem>();
 
         moveDownwards = true;
         moveUpwards = true;
 
-        nextFoamTime = 0.15f;
+        nextFoamTime = 0.01f;
         timePassed = nextFoamTime;
 
         upPosition = transform.localPosition;
@@ -31,6 +34,7 @@ public class Nozzle : MonoBehaviour
             {
                 timePassed = 0F;
                 CreateFoam();
+                ps.Emit(1);
             }
             if (moveDownwards)
                 StartCoroutine(MoveDownwards());
@@ -51,8 +55,8 @@ public class Nozzle : MonoBehaviour
 
     private Vector3 GetFoamPos()
     {
-        var x = Random.Range(-0.4f, 0.4f);
-        var z = Random.Range(-0.4f, 0.4f);
+        var x = Random.Range(-0.3f, 0.3f);
+        var z = Random.Range(-0.3f, 0.3f);
         return new Vector3(x, 1f, z);
     }
 

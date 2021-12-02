@@ -1,18 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Foam : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private float volume=3f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public float Volume { get => volume; set => volume = value; }
 }
