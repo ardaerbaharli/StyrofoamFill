@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Nozzle : MonoBehaviour
@@ -25,7 +24,6 @@ public class Nozzle : MonoBehaviour
     }
 
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButton(0))
@@ -50,7 +48,6 @@ public class Nozzle : MonoBehaviour
         var foam = Instantiate(foamPrefab);
         foam.transform.localPosition = GetFoamPos();
         foam.name = "foam";
-
     }
 
     private Vector3 GetFoamPos()
