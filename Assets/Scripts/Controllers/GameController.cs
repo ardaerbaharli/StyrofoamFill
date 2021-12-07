@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,84 +12,83 @@ public class GameController : MonoBehaviour
     [SerializeField] private List<GameObject> objects;
     private Player player;
 
+    private float gameSpeed;
+
     private float tileWidth;
     private float boxWidth;
 
-    void Start()
+    void Awake()
     {
+   
         boxWidth = boxPrefab.transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
         tileWidth = pLineTile.GetComponent<MeshRenderer>().bounds.size.x;
-
+        Debug.Log(boxWidth);
+        Debug.Log(tileWidth);
         progressBar.GetComponent<Slider>().maxValue = boxPrefab.GetComponent<Box>().MaxVolume;
         player = playerObj.GetComponent<Player>();
-
-        int[][] itemIndexes = new int[][] {
-            new int[] { 0, 3 },
-            new int[] { 2 },
-           };
-
-        int[] itemCounts = new int[itemIndexes.Length];
-
-        for (int i = 0; i < itemIndexes.Length; i++)
-        {
-            itemCounts[i] = itemIndexes[i].Length;
-        }
-
-        int amount = itemCounts.Length;
-
-        CreateBox(amount, itemCounts, itemIndexes);
-
-
-        CreateProductionLine();
-
     }
+    public void ConfigureGame(LevelConfig levelConfig)
+    {
+        gameSpeed = levelConfig.gameSpeed;
+        CreateBox(levelConfig);
+        CreateProductionLine();
+    }
+
+    private void CreateBox(LevelConfig levelConfig)
+    {
+        for (int i = 0; i < levelConfig.box.Count; i++)
+        {
+            var box = levelConfig.box[i];
+            float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - (2.5f * i * boxWidth);
+            var boxStartPos = new Vector3(boxStartPosX, -1.73f, 0);
+            var boxObj = Instantiate(boxPrefab);
+            boxObj.GetComponent<Box>().slideSpeed = gameSpeed;
+            Transform boxTransform = boxObj.transform;
+            boxTransform.position = boxStartPos;
+
+            for (int j = 0; j < box.item.Count; j++)
+            {
+                var item = box.item[j];
+                var objStartPos = new Vector3(boxStartPos.x, 0 + j, boxStartPos.z);
+                int index = item.index;
+                var obj = Instantiate(objects[index], boxTransform.GetChild(boxTransform.childCount - 1));
+                obj.transform.position = objStartPos;
+                boxObj.GetComponent<Box>().RemainingVolume -= obj.GetComponent<BoxObject>().Volume;
+            }
+
+        }
+    }
+
 
     private void CreateProductionLine()
     {
-        int tileCount = 50;
-        for (int i = 0; i <= tileCount; i++)
+        int tileCount = 40;
+        for (int i = 0; i < tileCount; i++)
         {
             var tile = Instantiate(pLineTile, pLine);
+            tile.GetComponent<ProductionLineTile>().slideSpeed = gameSpeed;
+
+            tile.name = "tile";
             tile.transform.position = GetTilePos(i);
         }
     }
 
     private Vector3 GetTilePos(int i)
     {
-        float tilePosX = -Camera.main.orthographicSize * Camera.main.aspect - (i * tileWidth) - (i * 0.1f);
+        float tilePosX = Camera.main.orthographicSize * Camera.main.aspect - (i * tileWidth) - (i * 0.1f);
         var tilePos = new Vector3(tilePosX, -1.869f, 0.311f);
         return tilePos;
     }
 
-    private void CreateBox(int boxCount, int[] itemCounts, int[][] itemIndexes)
-    {
-        for (int i = 0; i < boxCount; i++)
-        {
-            float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - (2.5f * i * boxWidth);
-            var boxStartPos = new Vector3(boxStartPosX, -1.73f, 0);
-            var box = Instantiate(boxPrefab);
-            Transform boxTransform = box.transform;
-            boxTransform.position = boxStartPos;
 
-            for (int j = 0; j < itemCounts[i]; j++)
-            {
-                var objStartPos = new Vector3(boxStartPos.x, 0 + j, boxStartPos.z);
-                int index = itemIndexes[i][j];
-                var obj = Instantiate(objects[index], boxTransform.GetChild(boxTransform.childCount - 1));
-                obj.transform.position = objStartPos;
-                box.GetComponent<Box>().RemainingVolume -= obj.GetComponent<BoxObject>().Volume;
-            }
-        }
-    }
-
-    public void Lost(BoxSituation boxSituation)
+    public void Lost(BoxStatus boxStatus)
     {
-        if (boxSituation.Equals(BoxSituation.Empty))
+        if (boxStatus.Equals(BoxStatus.Empty))
         {
             Debug.Log("Objects are broken");
             player.LoseMoney();
         }
-        else if (boxSituation.Equals(BoxSituation.OverFilled))
+        else if (boxStatus.Equals(BoxStatus.OverFilled))
         {
             Debug.Log("Box cant be closed");
             player.LoseMoney();
@@ -102,6 +99,4 @@ public class GameController : MonoBehaviour
         Debug.Log("Box is filled successfully");
         player.WinMoney();
     }
-
-
 }

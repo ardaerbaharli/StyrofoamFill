@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    public readonly float MaxVolume = 400f;
     [SerializeField] private float remainingVolume;
-    private BoxSituation boxSituation;
+    public readonly float MaxVolume = 400f;
+    public float slideSpeed;
+    private BoxStatus boxStatus;
     private GameController gameController;
+
     public float RemainingVolume { get => remainingVolume; set => remainingVolume = value; }
+    public bool slide;
 
     private void Awake()
     {
@@ -16,25 +19,27 @@ public class Box : MonoBehaviour
     }
     private void Start()
     {
+        slide = true;
         gameController = FindObjectOfType<GameController>();
     }
 
     private void Update()
     {
-        transform.position += Vector3.right * 0.5f * Time.deltaTime;
+        if (slide)
+            transform.position +=slideSpeed * Time.deltaTime * Vector3.right;
 
         if (remainingVolume < 0)
-            boxSituation = BoxSituation.OverFilled;
+            boxStatus = BoxStatus.OverFilled;
         else if (remainingVolume >= 0 && remainingVolume <= MaxVolume * 0.1f)
-            boxSituation = BoxSituation.Filled;
+            boxStatus = BoxStatus.Filled;
         else if (remainingVolume > MaxVolume * 0.1f)
-            boxSituation = BoxSituation.Empty;
+            boxStatus = BoxStatus.Empty;
     }
 
     public void OutOfNozzleRange()
     {
-        if (boxSituation.Equals(BoxSituation.Filled)) CloseBox();
-        else gameController.Lost(boxSituation);
+        if (boxStatus.Equals(BoxStatus.Filled)) CloseBox();
+        else gameController.Lost(boxStatus);
     }
 
     private void CloseBox()
