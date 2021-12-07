@@ -9,13 +9,6 @@ public class FoamCounter : MonoBehaviour
     {
         progressBar = FindObjectOfType<ProgressBar>();
         box = transform.parent;
-        float totalItemVolume = 0;
-        var objHolder = box.GetChild(box.childCount - 1);
-        for (int i = 0; i < objHolder.childCount; i++)
-        {
-            totalItemVolume += objHolder.GetChild(i).GetComponent<BoxObject>().Volume;
-        }
-        AddedItem(totalItemVolume);
     }
     private void OnTriggerEnter(Collider other)
     {

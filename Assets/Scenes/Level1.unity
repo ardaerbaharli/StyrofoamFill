@@ -732,7 +732,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7720c9a6e11df4bcd927f3dad08feb92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetProgress: 0
   fillSpeed: 120
+  currentValue: 0
 --- !u!114 &992517415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -758,7 +760,7 @@ MonoBehaviour:
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
+    m_ColorMultiplier: 3.16
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
@@ -772,7 +774,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1345402714}
   m_FillRect: {fileID: 1345402713}
   m_HandleRect: {fileID: 0}
   m_Direction: 0

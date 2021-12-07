@@ -16,7 +16,7 @@ public class Nozzle : MonoBehaviour
         moveDownwards = true;
         moveUpwards = true;
 
-        nextFoamTime = 0.01f;
+        nextFoamTime = 0.002f;
         timePassed = nextFoamTime;
 
         upPosition = transform.localPosition;
@@ -28,12 +28,12 @@ public class Nozzle : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            if (timePassed > nextFoamTime)// create next foam
-            {
+            //if (timePassed > nextFoamTime)// create next foam
+            //{
                 timePassed = 0F;
                 CreateFoam();
                 ps.Emit(1);
-            }
+            //}
             if (moveDownwards)
                 StartCoroutine(MoveDownwards());
             timePassed += Time.deltaTime;
@@ -52,8 +52,8 @@ public class Nozzle : MonoBehaviour
 
     private Vector3 GetFoamPos()
     {
-        var x = Random.Range(-0.3f, 0.3f);
-        var z = Random.Range(-0.3f, 0.3f);
+        var x = Random.Range(-0.2f, 0.2f);
+        var z = Random.Range(-0.4f, 0.4f);
         return new Vector3(x, 1f, z);
     }
 
