@@ -6,18 +6,16 @@ public class Nozzle : MonoBehaviour
     [SerializeField] private GameObject foamPrefab;
 
     private bool moveDownwards, moveUpwards;
-    private float nextFoamTime, timePassed;
     private Vector3 upPosition, downPosition;
     private ParticleSystem ps;
     void Start()
     {
+        GetComponent<MeshRenderer>().material.color = Color.gray;
+
         ps = GetComponentInChildren<ParticleSystem>();
 
         moveDownwards = true;
         moveUpwards = true;
-
-        nextFoamTime = 0.002f;
-        timePassed = nextFoamTime;
 
         upPosition = transform.localPosition;
         downPosition = upPosition - new Vector3(0, 1f, 0);
@@ -28,15 +26,11 @@ public class Nozzle : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            //if (timePassed > nextFoamTime)// create next foam
-            //{
-                timePassed = 0F;
-                CreateFoam();
-                ps.Emit(1);
-            //}
+            CreateFoam();
+            ps.Emit(1);
+
             if (moveDownwards)
                 StartCoroutine(MoveDownwards());
-            timePassed += Time.deltaTime;
         }
         else
             if (moveUpwards)
@@ -53,7 +47,7 @@ public class Nozzle : MonoBehaviour
     private Vector3 GetFoamPos()
     {
         var x = Random.Range(-0.2f, 0.2f);
-        var z = Random.Range(-0.4f, 0.4f);
+        var z = Random.Range(-0.2f, 0.2f);
         return new Vector3(x, 1f, z);
     }
 

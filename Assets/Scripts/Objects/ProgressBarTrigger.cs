@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class LeftCollider : MonoBehaviour
+public class ProgressBarTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject progressBar;
 

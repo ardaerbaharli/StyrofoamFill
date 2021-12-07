@@ -17,7 +17,6 @@ public class Box : MonoBehaviour
     private void Start()
     {
         gameController = FindObjectOfType<GameController>();
-
     }
 
     private void Update()
@@ -43,7 +42,6 @@ public class Box : MonoBehaviour
         var topLeft = transform.GetChild(1);
         var topRight = transform.GetChild(2);
         StartCoroutine(Rotate(topLeft));
-        //topRight.rotation = Quaternion.Euler(new Vector3(180, 0, 0));
         StartCoroutine(Rotate(topRight));
     }
 

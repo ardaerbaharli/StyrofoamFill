@@ -69,6 +69,7 @@ GameObject:
   - component: {fileID: 2320807088054821457}
   - component: {fileID: 4057220617860188890}
   - component: {fileID: 8034638258749413030}
+  - component: {fileID: 173483462859223626}
   m_Layer: 0
   m_Name: topLeft
   m_TagString: Untagged
@@ -151,6 +152,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &173483462859223626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807011986031963889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2230519567699251721
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +176,7 @@ GameObject:
   - component: {fileID: 2230519567699251717}
   - component: {fileID: 2230519567699251718}
   - component: {fileID: 2230519567699251719}
+  - component: {fileID: 6362158172179976870}
   m_Layer: 0
   m_Name: back
   m_TagString: Untagged
@@ -245,6 +259,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &6362158172179976870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230519567699251721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2230519568186571672
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,6 +283,7 @@ GameObject:
   - component: {fileID: 2230519568186571668}
   - component: {fileID: 2230519568186571669}
   - component: {fileID: 2230519568186571670}
+  - component: {fileID: 3620090794592453671}
   m_Layer: 0
   m_Name: left
   m_TagString: Untagged
@@ -339,6 +366,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &3620090794592453671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230519568186571672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2230519568386190575
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,6 +390,7 @@ GameObject:
   - component: {fileID: 2230519568386190571}
   - component: {fileID: 2230519568386190572}
   - component: {fileID: 2230519568386190573}
+  - component: {fileID: 14275109418242823}
   m_Layer: 0
   m_Name: bottom
   m_TagString: Untagged
@@ -433,6 +473,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &14275109418242823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230519568386190575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2230519568798098066
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,6 +551,7 @@ GameObject:
   - component: {fileID: 2230519568990714273}
   - component: {fileID: 2230519568990714274}
   - component: {fileID: 2230519568990714275}
+  - component: {fileID: 2991627459711899546}
   m_Layer: 0
   m_Name: front
   m_TagString: Untagged
@@ -581,6 +634,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2991627459711899546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230519568990714277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2230519569077182605
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,6 +658,7 @@ GameObject:
   - component: {fileID: 2230519569077182601}
   - component: {fileID: 2230519569077182602}
   - component: {fileID: 2230519569077182603}
+  - component: {fileID: 1364635016786580925}
   m_Layer: 0
   m_Name: right
   m_TagString: Untagged
@@ -675,6 +741,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1364635016786580925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230519569077182605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2921931332531609161
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,6 +795,7 @@ GameObject:
   - component: {fileID: 5070091087507322455}
   - component: {fileID: 5207071197506922602}
   - component: {fileID: 6181420490095527951}
+  - component: {fileID: 3801405104404899523}
   m_Layer: 0
   m_Name: topRight
   m_TagString: Untagged
@@ -799,6 +878,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &3801405104404899523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4187824277189234273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34147e0df41e4df2a457e5a0f331535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7972177635035595006
 GameObject:
   m_ObjectHideFlags: 0

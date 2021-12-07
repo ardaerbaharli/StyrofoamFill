@@ -7,16 +7,27 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private GameObject boxPrefab;
+    [SerializeField] private GameObject pLineTile;
+    [SerializeField] private Transform pLine;
     [SerializeField] private GameObject progressBar;
+    [SerializeField] private GameObject playerObj;
     [SerializeField] private List<GameObject> objects;
-    public static GameController instance;
+    private Player player;
+
+    private float tileWidth;
+    private float boxWidth;
+
     void Start()
     {
+        boxWidth = boxPrefab.transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
+        tileWidth = pLineTile.GetComponent<MeshRenderer>().bounds.size.x;
+
         progressBar.GetComponent<Slider>().maxValue = boxPrefab.GetComponent<Box>().MaxVolume;
+        player = playerObj.GetComponent<Player>();
 
         int[][] itemIndexes = new int[][] {
             new int[] { 0, 3 },
-            new int[] { 2, 1 },
+            new int[] { 2 },
            };
 
         int[] itemCounts = new int[itemIndexes.Length];
@@ -29,12 +40,31 @@ public class GameController : MonoBehaviour
         int amount = itemCounts.Length;
 
         CreateBox(amount, itemCounts, itemIndexes);
+
+
+        CreateProductionLine();
+
+    }
+
+    private void CreateProductionLine()
+    {
+        int tileCount = 50;
+        for (int i = 0; i <= tileCount; i++)
+        {
+            var tile = Instantiate(pLineTile, pLine);
+            tile.transform.position = GetTilePos(i);
+        }
+    }
+
+    private Vector3 GetTilePos(int i)
+    {
+        float tilePosX = -Camera.main.orthographicSize * Camera.main.aspect - (i * tileWidth) - (i * 0.1f);
+        var tilePos = new Vector3(tilePosX, -1.869f, 0.311f);
+        return tilePos;
     }
 
     private void CreateBox(int boxCount, int[] itemCounts, int[][] itemIndexes)
     {
-        float boxWidth = boxPrefab.transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
-
         for (int i = 0; i < boxCount; i++)
         {
             float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - (2.5f * i * boxWidth);
@@ -59,10 +89,19 @@ public class GameController : MonoBehaviour
         if (boxSituation.Equals(BoxSituation.Empty))
         {
             Debug.Log("Objects are broken");
+            player.LoseMoney();
         }
         else if (boxSituation.Equals(BoxSituation.OverFilled))
         {
             Debug.Log("Box cant be closed");
+            player.LoseMoney();
         }
     }
+    public void Win()
+    {
+        Debug.Log("Box is filled successfully");
+        player.WinMoney();
+    }
+
+
 }
