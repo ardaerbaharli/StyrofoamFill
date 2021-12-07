@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
@@ -9,27 +11,33 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform pLine;
     [SerializeField] private GameObject progressBar;
     [SerializeField] private GameObject playerObj;
+    [SerializeField] private GameObject levelOverMenu;
+    [SerializeField] private Transform canvas;
     [SerializeField] private List<GameObject> objects;
+
     private Player player;
-
-    private float gameSpeed;
-
+    private List<GameObject> boxes;
+    private LevelConfig levelConfig;
+    private LevelController levelController;
     private float tileWidth;
     private float boxWidth;
 
     void Awake()
     {
-   
+
         boxWidth = boxPrefab.transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
         tileWidth = pLineTile.GetComponent<MeshRenderer>().bounds.size.x;
-        Debug.Log(boxWidth);
-        Debug.Log(tileWidth);
+
         progressBar.GetComponent<Slider>().maxValue = boxPrefab.GetComponent<Box>().MaxVolume;
         player = playerObj.GetComponent<Player>();
+        boxes = new List<GameObject>();
     }
-    public void ConfigureGame(LevelConfig levelConfig)
+  
+   
+    public void ConfigureGame(LevelController levelController)
     {
-        gameSpeed = levelConfig.gameSpeed;
+        this.levelController = levelController;
+        levelConfig = levelController.currentLevelConfig;
         CreateBox(levelConfig);
         CreateProductionLine();
     }
@@ -42,7 +50,7 @@ public class GameController : MonoBehaviour
             float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - (2.5f * i * boxWidth);
             var boxStartPos = new Vector3(boxStartPosX, -1.73f, 0);
             var boxObj = Instantiate(boxPrefab);
-            boxObj.GetComponent<Box>().slideSpeed = gameSpeed;
+            boxObj.GetComponent<Box>().slideSpeed = levelConfig.gameSpeed;
             Transform boxTransform = boxObj.transform;
             boxTransform.position = boxStartPos;
 
@@ -55,7 +63,7 @@ public class GameController : MonoBehaviour
                 obj.transform.position = objStartPos;
                 boxObj.GetComponent<Box>().RemainingVolume -= obj.GetComponent<BoxObject>().Volume;
             }
-
+            boxes.Add(boxObj);
         }
     }
 
@@ -66,7 +74,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < tileCount; i++)
         {
             var tile = Instantiate(pLineTile, pLine);
-            tile.GetComponent<ProductionLineTile>().slideSpeed = gameSpeed;
+            tile.GetComponent<ProductionLineTile>().slideSpeed = levelConfig.gameSpeed;
 
             tile.name = "tile";
             tile.transform.position = GetTilePos(i);
@@ -94,9 +102,34 @@ public class GameController : MonoBehaviour
             player.LoseMoney();
         }
     }
+
+
     public void Win()
     {
         Debug.Log("Box is filled successfully");
         player.WinMoney();
+    }
+
+    public void LevelOver()
+    {
+        ShowMenu();
+    }
+
+    private void ShowMenu()
+    {
+        var menu = Instantiate(levelOverMenu, canvas);
+        DestroyGameObjects();
+        menu.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(delegate { levelController.LoadNextLevel(); });
+        menu.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(delegate { levelController.RestartLevel(); });
+    }
+
+    private void DestroyGameObjects()
+    {
+        foreach (var box in boxes)
+        {
+            Destroy(box);
+        }
+        Destroy(GameObject.Find("Nozzle"));
+        Destroy(progressBar);
     }
 }
