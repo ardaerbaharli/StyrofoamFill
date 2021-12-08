@@ -2,7 +2,7 @@
 
 public class Foam : MonoBehaviour
 {
-    private float volume = 4f;
+    private float volume = 3.7f;
 
     public float Volume { get => volume; set => volume = value; }
 
