@@ -53,18 +53,74 @@ public class Box : MonoBehaviour
     }
 
 
-    public void SlideToMiddle()
+    public IEnumerator Showcase()
     {
+        // move to the middle
+        var startPos = transform.position;
+        var targetPos = new Vector3(0, 0, 0);
 
+        float seconds = 2f;
+        float t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            transform.position = Vector3.Lerp(transform.position, targetPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+
+        // show objecsts
+        var objects = transform.GetChild(transform.childCount - 1);
+        for (int i = 0; i < objects.childCount; i++)
+        {
+            var obj = objects.GetChild(i);
+            var objTargetPos = new Vector3(obj.transform.position.x, obj.transform.position.y + 1f, obj.transform.position.z);
+            yield return StartCoroutine(ShowObject(obj.gameObject, objTargetPos));
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // close the box
+        CloseBox();
+        yield return new WaitForSeconds(0.5f);
+
+        // move to the side
+        t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            transform.position = Vector3.Lerp(transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.5f);
     }
 
+    private IEnumerator ShowObject(GameObject obj, Vector3 target)
+    {
+        Destroy(obj.GetComponent<Rigidbody>());
+
+        float seconds = 2f;
+        float t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            obj.transform.position = Vector3.Lerp(obj.transform.position, target, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+
+        var rb = obj.AddComponent<Rigidbody>();
+        rb.mass = 10;
+        rb.useGravity = true;
+    }
 
     public void OutOfNozzleRange()
     {
         if (boxStatus.Equals(BoxStatus.Filled))
         {
-            CloseBox();
-            StartCoroutine(gameController.Win());
+            //CloseBox();
+            StartCoroutine(gameController.Win(gameObject));
         }
         else StartCoroutine(gameController.Lost(boxStatus));
 
@@ -74,23 +130,35 @@ public class Box : MonoBehaviour
     {
         var topLeft = transform.GetChild(1);
         var topRight = transform.GetChild(2);
-        StartCoroutine(Rotate(topLeft));
-        StartCoroutine(Rotate(topRight));
+
+        StartCoroutine(Rotate(topLeft, -359));
+        StartCoroutine(Rotate(topRight, 359));
     }
 
-    private IEnumerator Rotate(Transform go)
+
+
+
+    private IEnumerator Rotate(Transform go, float zAngle)
     {
-        var v = new Vector3(180, 0, 0);
-        var q = Quaternion.Euler(v);
 
-        float seconds = 0.6f;
-        float t = 0f;
-        while (t <= 1.0)
+        const float Interval1 = 2.0f;
+        Quaternion from = transform.rotation;
+        Quaternion to = Quaternion.Euler(0, 0, zAngle);
+
+
+        for (float t = 0; t < Interval1; t += Time.deltaTime)
         {
-            t += Time.deltaTime / seconds;
-            go.rotation = Quaternion.Lerp(go.rotation, q, Mathf.SmoothStep(0f, 1f, t));
-            yield return null;
-        }
+            float fraction = t / Interval1;
 
+            // put code here to gently rotate your ship from its tipped position back to upright
+            // I created the 'fraction' variable above because it is easy to use it
+            // with either Quaternion.Lerp to smoothly turn you from one rotation to another,
+            // or to use it with Vector3.Lerp for translation (smooth movement)
+
+            // set the rotation here after calculating it with Quaternion.Lerp and 'fraction'
+            go.localRotation = Quaternion.Slerp(from, to, fraction);
+            yield return null;   // gotta have this so it waits until the next frame
+        }
+        Debug.Log("asdfa");
     }
 }

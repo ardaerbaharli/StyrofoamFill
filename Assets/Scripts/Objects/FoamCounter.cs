@@ -3,18 +3,18 @@
 public class FoamCounter : MonoBehaviour
 {
     private ProgressBar progressBar;
-    private Transform box;
+    public Transform foamHolder;
 
     private void Start()
     {
         progressBar = FindObjectOfType<ProgressBar>();
-        box = transform.parent;
+        
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.name.Equals("foam"))
         {
-            other.transform.SetParent(box);
+            other.transform.SetParent(foamHolder);
             var foamVolume = other.GetComponent<Foam>().Volume;
             AddedItem(foamVolume);
         }
@@ -23,6 +23,6 @@ public class FoamCounter : MonoBehaviour
     private void AddedItem(float volume)
     {
         progressBar.IncrementValue(volume);
-        box.GetComponent<Box>().RemainingVolume -= volume;
+        foamHolder.parent.GetComponent<Box>().RemainingVolume -= volume;
     }
 }

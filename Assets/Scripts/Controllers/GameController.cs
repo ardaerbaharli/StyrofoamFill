@@ -22,19 +22,12 @@ public class GameController : MonoBehaviour
     private Player player;
     private List<GameObject> boxes;
     private int numberOfBoxes;
+    private List<GameObject> showCaseBoxes;
     private List<GameObject> pLineTiles;
     private LevelConfig levelConfig;
     private LevelController levelController;
 
-    public void SpeedUp()
-    {
-        gameSpeed = 2;
 
-    }
-    public void SlowDown()
-    {
-        gameSpeed = 1;
-    }
 
     private float tileWidth;
     private float boxWidth;
@@ -52,6 +45,7 @@ public class GameController : MonoBehaviour
 
         boxes = new List<GameObject>();
         pLineTiles = new List<GameObject>();
+        showCaseBoxes = new List<GameObject>();
     }
     private void Update()
     {
@@ -139,14 +133,16 @@ public class GameController : MonoBehaviour
             SpeedUp();
             while (AreBoxesStopped() == false)
                 yield return null;
-            LevelOver();
+            StartCoroutine(LevelOver());
         }
     }
 
 
-    public IEnumerator Win()
+    public IEnumerator Win(GameObject gameObject)
     {
         CreateReaction("Keep it up!");
+
+        showCaseBoxes.Add(gameObject);
 
         Debug.Log("Box is filled successfully");
         player.WinMoney();
@@ -157,7 +153,7 @@ public class GameController : MonoBehaviour
             SpeedUp();
             while (AreBoxesStopped() == false)
                 yield return null;
-            LevelOver();
+            StartCoroutine(LevelOver());
         }
     }
 
@@ -174,14 +170,20 @@ public class GameController : MonoBehaviour
 
 
 
-    public void LevelOver()
+    public IEnumerator LevelOver()
     {
+        DestroyOrStopGameObjects();
+
+        foreach (var box in showCaseBoxes)
+        {
+            yield return StartCoroutine(box.GetComponent<Box>().Showcase());
+        }
+
         ShowMenu();
     }
 
     private void ShowMenu()
     {
-        DestroyOrStopGameObjects();
         var menu = Instantiate(levelOverMenu, canvas);
         menu.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(delegate { levelController.LoadNextLevel(); });
         menu.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(delegate { levelController.RestartLevel(); });
@@ -233,5 +235,15 @@ public class GameController : MonoBehaviour
             yield return null;
         }
         Destroy(g);
+    }
+
+    public void SpeedUp()
+    {
+        gameSpeed = 2;
+
+    }
+    public void SlowDown()
+    {
+        gameSpeed = 1;
     }
 }

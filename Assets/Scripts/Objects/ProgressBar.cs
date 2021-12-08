@@ -33,7 +33,7 @@ public class ProgressBar : MonoBehaviour
         targetProgress = currentValue;
         if (currentValue >= slider.maxValue)
             fillerImage.color = Color.red;
-        else if (currentValue > slider.maxValue * 9 / 10)
+        else if (currentValue > slider.maxValue * 0.9f)
             fillerImage.color = Color.green;
     }
 
