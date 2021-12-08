@@ -578,6 +578,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7913646232632812465, guid: 58bd5666a255b4025825872c63ee4398,
         type: 3}
+      propertyPath: levelConfigs.Array.data[0].box.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7913646232632812465, guid: 58bd5666a255b4025825872c63ee4398,
+        type: 3}
       propertyPath: levelConfigs.Array.data[1].box.Array.data[0].item.Array.data[0].index
       value: 1
       objectReference: {fileID: 0}
