@@ -947,6 +947,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6572901190495186286, guid: 3c3f261c547bb432e802b0f42839b3ef,
         type: 3}
+    - target: {fileID: 4534430263014043979, guid: e5c1dc45ec2bc43bcb13c65e212b2cdf,
+        type: 3}
+      propertyPath: labelPrinter
+      value: 
+      objectReference: {fileID: 2790827183770467735, guid: 446e1ca404b064d2ab90e755709e8c57,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5c1dc45ec2bc43bcb13c65e212b2cdf, type: 3}
 --- !u!1001 &4649704915177982942

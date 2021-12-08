@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Threading.Tasks;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform pLine;
 
     [SerializeField] private GameObject progressBar;
+    [SerializeField] private GameObject labelPrinter;
     [SerializeField] private GameObject playerObj;
     [SerializeField] private GameObject levelOverMenu;
     [SerializeField] private GameObject reaction;
@@ -168,18 +170,95 @@ public class GameController : MonoBehaviour
         return result;
     }
 
-
-
     public IEnumerator LevelOver()
     {
         DestroyOrStopGameObjects();
 
         foreach (var box in showCaseBoxes)
         {
+            var startPos = box.transform.position;
+
             yield return StartCoroutine(box.GetComponent<Box>().Showcase());
+            yield return StartCoroutine(PrintNameOnTheBox(box));
+
+            yield return new WaitForSeconds(1f);
+            // close the box
+            StartCoroutine(box.GetComponent<Box>().CloseBox());
+
+            yield return new WaitForSeconds(1.5f);
+
+            // move to the side
+            float seconds = 2f;
+            float t = 0f;
+            while (t <= 1.0)
+            {
+                t += Time.deltaTime / seconds;
+                box.transform.position = Vector3.Lerp(box.transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
         }
 
         ShowMenu();
+    }
+
+    private IEnumerator PrintNameOnTheBox(GameObject box)
+    {
+        var printer = Instantiate(labelPrinter);
+        var screenWidth = -Camera.main.orthographicSize * Camera.main.aspect;
+        var printerWidth = labelPrinter.GetComponent<MeshRenderer>().bounds.size.x;
+        printer.transform.position = new Vector3(screenWidth - printerWidth, 0, 0);
+
+        var startPos = printer.transform.position;
+        var targetPos = box.transform.position + new Vector3(-0.4f, 0.35f, -1.25f);
+
+        // slide to the box
+
+        float seconds = 2f;
+        float t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            printer.transform.position = Vector3.Lerp(printer.transform.position, targetPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // collect objects names
+        string label = "";
+        var objects = box.transform.GetChild(box.transform.childCount - 1);
+        for (int i = 0; i < objects.childCount; i++)
+        {
+            label += objects.GetChild(i).GetComponent<BoxObject>().Name + "\n";
+        }
+        box.GetComponentInChildren<TextMeshPro>().text = label;
+
+        // move slightly
+        seconds = 1f;
+        targetPos += new Vector3(1f, 0, 0);
+        t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            printer.transform.position = Vector3.Lerp(printer.transform.position, targetPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // go back
+        seconds = 2f;
+        t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            printer.transform.position = Vector3.Lerp(printer.transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        yield return new WaitForSeconds(1f);
+        Destroy(printer);
+
     }
 
     private void ShowMenu()

@@ -56,7 +56,7 @@ public class Box : MonoBehaviour
     public IEnumerator Showcase()
     {
         // move to the middle
-        var startPos = transform.position;
+        //var startPos = transform.position;
         var targetPos = new Vector3(0, 0, 0);
 
         float seconds = 2f;
@@ -78,20 +78,20 @@ public class Box : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1f);
+        //// close the box
+        //CloseBox();
+        //yield return new WaitForSeconds(0.5f);
 
-        // close the box
-        CloseBox();
-        yield return new WaitForSeconds(0.5f);
+        //// move to the side
+        //float t = 0f;
+        //while (t <= 1.0)
+        //{
+        //    t += Time.deltaTime / seconds;
+        //    transform.position = Vector3.Lerp(transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
+        //    yield return null;
+        //}
+        //yield return new WaitForSeconds(0.5f);
 
-        // move to the side
-        t = 0f;
-        while (t <= 1.0)
-        {
-            t += Time.deltaTime / seconds;
-            transform.position = Vector3.Lerp(transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
-            yield return null;
-        }
-        yield return new WaitForSeconds(0.5f);
     }
 
     private IEnumerator ShowObject(GameObject obj, Vector3 target)
@@ -126,39 +126,34 @@ public class Box : MonoBehaviour
 
     }
 
-    private void CloseBox()
+    public IEnumerator CloseBox()
     {
         var topLeft = transform.GetChild(1);
         var topRight = transform.GetChild(2);
 
-        StartCoroutine(Rotate(topLeft, -359));
-        StartCoroutine(Rotate(topRight, 359));
+        yield return StartCoroutine(Rotate(topLeft, -359));
+        yield return StartCoroutine(Rotate(topRight, 359));
     }
-
-
 
 
     private IEnumerator Rotate(Transform go, float zAngle)
     {
 
-        const float Interval1 = 2.0f;
-        Quaternion from = transform.rotation;
-        Quaternion to = Quaternion.Euler(0, 0, zAngle);
-
-
-        for (float t = 0; t < Interval1; t += Time.deltaTime)
+        for (int i = 1; i < 5; i++)
         {
-            float fraction = t / Interval1;
-
-            // put code here to gently rotate your ship from its tipped position back to upright
-            // I created the 'fraction' variable above because it is easy to use it
-            // with either Quaternion.Lerp to smoothly turn you from one rotation to another,
-            // or to use it with Vector3.Lerp for translation (smooth movement)
-
-            // set the rotation here after calculating it with Quaternion.Lerp and 'fraction'
-            go.localRotation = Quaternion.Slerp(from, to, fraction);
-            yield return null;   // gotta have this so it waits until the next frame
+            float interval = 0.25f;
+            Quaternion startAngle = go.rotation;
+            Quaternion targetAngle = Quaternion.Euler(0, 0, zAngle / 5 - i);
+            float elapsed = 0f;
+            while (elapsed < interval)
+            {
+                go.rotation = Quaternion.Lerp(startAngle, targetAngle, elapsed / 2);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            go.rotation = targetAngle;
+            yield return null;
         }
-        Debug.Log("asdfa");
+
     }
 }

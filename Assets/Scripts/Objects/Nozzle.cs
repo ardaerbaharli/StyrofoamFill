@@ -49,8 +49,8 @@ public class Nozzle : MonoBehaviour
 
     private Vector3 GetFoamPos()
     {
-        var x = Random.Range(-0.145f, 0.145f);
-        var z = Random.Range(-0.387f, 0.387f);
+        var x = Random.Range(-0.387f, 0.387f);
+        var z = Random.Range(-0.145f, 0.145f);
         return new Vector3(x, 1f, z);
     }
 
