@@ -7,11 +7,16 @@ public class Box : MonoBehaviour
     [SerializeField] private float remainingVolume;
     public readonly float MaxVolume = 400f;
     public float slideSpeed;
-    private BoxStatus boxStatus;
-    private GameController gameController;
+    public float index;
 
     public float RemainingVolume { get => remainingVolume; set => remainingVolume = value; }
     public bool slide;
+
+    private float screenLeftBorderX, screenRightBorderX;
+    private float boxWidth;
+    private float targetPosX;
+    private BoxStatus boxStatus;
+    private GameController gameController;
 
     private void Awake()
     {
@@ -19,14 +24,23 @@ public class Box : MonoBehaviour
     }
     private void Start()
     {
+        screenRightBorderX = Camera.main.orthographicSize * Camera.main.aspect;
+        screenLeftBorderX = -Camera.main.orthographicSize * Camera.main.aspect;
+        boxWidth = transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
+        const float distanceBetweenBoxes = 2.5f;
+        var startPosX = transform.position.x;
+        var space = screenLeftBorderX - startPosX;
+
+        targetPosX = transform.position.x + (screenRightBorderX - screenLeftBorderX) + space + boxWidth + (distanceBetweenBoxes * index);
+
         slide = true;
         gameController = FindObjectOfType<GameController>();
     }
 
     private void Update()
     {
-        if (slide)
-            transform.position +=slideSpeed * Time.deltaTime * Vector3.right;
+        if (slide && transform.position.x < targetPosX)
+            transform.position += slideSpeed * Time.deltaTime * Vector3.right;
 
         if (remainingVolume < 0)
             boxStatus = BoxStatus.OverFilled;
@@ -36,10 +50,22 @@ public class Box : MonoBehaviour
             boxStatus = BoxStatus.Empty;
     }
 
+
+    public void SlideToMiddle()
+    {
+
+    }
+
+
     public void OutOfNozzleRange()
     {
-        if (boxStatus.Equals(BoxStatus.Filled)) CloseBox();
+        if (boxStatus.Equals(BoxStatus.Filled))
+        {
+            CloseBox();
+            gameController.Win();
+        }
         else gameController.Lost(boxStatus);
+
     }
 
     private void CloseBox()

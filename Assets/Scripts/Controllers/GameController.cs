@@ -17,23 +17,26 @@ public class GameController : MonoBehaviour
 
     private Player player;
     private List<GameObject> boxes;
+    private List<GameObject> pLineTiles;
     private LevelConfig levelConfig;
     private LevelController levelController;
+    private int playableNumberOfBoxes;
     private float tileWidth;
     private float boxWidth;
 
     void Awake()
     {
-
         boxWidth = boxPrefab.transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
         tileWidth = pLineTile.GetComponent<MeshRenderer>().bounds.size.x;
 
         progressBar.GetComponent<Slider>().maxValue = boxPrefab.GetComponent<Box>().MaxVolume;
         player = playerObj.GetComponent<Player>();
+
         boxes = new List<GameObject>();
+        pLineTiles = new List<GameObject>();
     }
-  
-   
+
+
     public void ConfigureGame(LevelController levelController)
     {
         this.levelController = levelController;
@@ -44,13 +47,15 @@ public class GameController : MonoBehaviour
 
     private void CreateBox(LevelConfig levelConfig)
     {
+        const float distanceBetweenBoxes = 2.5f;
         for (int i = 0; i < levelConfig.box.Count; i++)
         {
             var box = levelConfig.box[i];
-            float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - (2.5f * i * boxWidth);
+            float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - boxWidth - (distanceBetweenBoxes * i);
             var boxStartPos = new Vector3(boxStartPosX, -1.73f, 0);
             var boxObj = Instantiate(boxPrefab);
             boxObj.GetComponent<Box>().slideSpeed = levelConfig.gameSpeed;
+            boxObj.GetComponent<Box>().index = (levelConfig.box.Count-1) - i;
             Transform boxTransform = boxObj.transform;
             boxTransform.position = boxStartPos;
 
@@ -65,6 +70,7 @@ public class GameController : MonoBehaviour
             }
             boxes.Add(boxObj);
         }
+        playableNumberOfBoxes = boxes.Count;
     }
 
 
@@ -78,6 +84,7 @@ public class GameController : MonoBehaviour
 
             tile.name = "tile";
             tile.transform.position = GetTilePos(i);
+            pLineTiles.Add(tile);
         }
     }
 
@@ -91,6 +98,7 @@ public class GameController : MonoBehaviour
 
     public void Lost(BoxStatus boxStatus)
     {
+        playableNumberOfBoxes--;
         if (boxStatus.Equals(BoxStatus.Empty))
         {
             Debug.Log("Objects are broken");
@@ -101,34 +109,45 @@ public class GameController : MonoBehaviour
             Debug.Log("Box cant be closed");
             player.LoseMoney();
         }
+        if (playableNumberOfBoxes == 0)
+            LevelOver();
     }
 
 
     public void Win()
     {
+        playableNumberOfBoxes--;
         Debug.Log("Box is filled successfully");
         player.WinMoney();
+        if (playableNumberOfBoxes == 0)
+            LevelOver();
     }
 
     public void LevelOver()
     {
-        ShowMenu();
+        // ShowMenu();
     }
 
     private void ShowMenu()
     {
+        DestroyOrStopGameObjects();
         var menu = Instantiate(levelOverMenu, canvas);
-        DestroyGameObjects();
         menu.transform.GetChild(1).GetComponent<Button>().onClick.AddListener(delegate { levelController.LoadNextLevel(); });
         menu.transform.GetChild(2).GetComponent<Button>().onClick.AddListener(delegate { levelController.RestartLevel(); });
     }
 
-    private void DestroyGameObjects()
+    private void DestroyOrStopGameObjects()
     {
         foreach (var box in boxes)
         {
-            Destroy(box);
+            box.GetComponent<Box>().slide = false;
         }
+
+        foreach (var tile in pLineTiles)
+        {
+            tile.GetComponent<ProductionLineTile>().slide = false;
+        }
+
         Destroy(GameObject.Find("Nozzle"));
         Destroy(progressBar);
     }

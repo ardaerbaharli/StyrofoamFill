@@ -28,7 +28,7 @@ public class LevelController : MonoBehaviour
     public void LoadNextLevel()
     {
         currentLevelIndex++;
-        if (currentLevelIndex <= levelConfigs.Count)
+        if (currentLevelIndex < levelConfigs.Count)
         {
             LoadGameScreen(currentLevelIndex);
         }
