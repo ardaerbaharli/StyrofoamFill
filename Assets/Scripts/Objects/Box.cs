@@ -27,7 +27,7 @@ public class Box : MonoBehaviour
         screenRightBorderX = Camera.main.orthographicSize * Camera.main.aspect;
         screenLeftBorderX = -Camera.main.orthographicSize * Camera.main.aspect;
         boxWidth = transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
-        const float distanceBetweenBoxes = 2.5f;
+        const float distanceBetweenBoxes = 4f;
         var startPosX = transform.position.x;
         var space = screenLeftBorderX - startPosX;
 

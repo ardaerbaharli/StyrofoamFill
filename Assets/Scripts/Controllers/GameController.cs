@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameObject levelOverMenu;
     [SerializeField] private Transform canvas;
     [SerializeField] private List<GameObject> objects;
-
+    [SerializeField] [Range(0 , 10f)] private float gameSpeed=1f;
     private Player player;
     private List<GameObject> boxes;
     private List<GameObject> pLineTiles;
@@ -35,7 +35,10 @@ public class GameController : MonoBehaviour
         boxes = new List<GameObject>();
         pLineTiles = new List<GameObject>();
     }
-
+    private void Update()
+    {
+        Time.timeScale = gameSpeed;
+    }
 
     public void ConfigureGame(LevelController levelController)
     {
@@ -47,13 +50,14 @@ public class GameController : MonoBehaviour
 
     private void CreateBox(LevelConfig levelConfig)
     {
-        const float distanceBetweenBoxes = 2.5f;
+        const float distanceBetweenBoxes = 4f;
         for (int i = 0; i < levelConfig.box.Count; i++)
         {
             var box = levelConfig.box[i];
             float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - boxWidth - (distanceBetweenBoxes * i);
             var boxStartPos = new Vector3(boxStartPosX, -1.73f, 0);
             var boxObj = Instantiate(boxPrefab);
+            boxObj.name = $"Box{i}";
             boxObj.GetComponent<Box>().slideSpeed = levelConfig.gameSpeed;
             boxObj.GetComponent<Box>().index = (levelConfig.box.Count-1) - i;
             Transform boxTransform = boxObj.transform;
