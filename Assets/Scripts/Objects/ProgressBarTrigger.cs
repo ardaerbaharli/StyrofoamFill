@@ -3,11 +3,14 @@
 public class ProgressBarTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject progressBar;
+    [SerializeField] private GameObject gameController;
+
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.name.Equals("ProgressBarCollider"))
         {
+            gameController.GetComponent<GameController>().SlowDown();
             var box = other.transform.parent;
             var objects = box.GetChild(box.childCount - 1);
             float totalVolume = 0;

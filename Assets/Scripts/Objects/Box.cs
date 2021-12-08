@@ -5,12 +5,13 @@ using UnityEngine;
 public class Box : MonoBehaviour
 {
     [SerializeField] private float remainingVolume;
-    public readonly float MaxVolume = 400f;
+    public readonly float MaxVolume = 500f;
     public float slideSpeed;
     public float index;
 
     public float RemainingVolume { get => remainingVolume; set => remainingVolume = value; }
     public bool slide;
+    public bool isStopped;
 
     private float screenLeftBorderX, screenRightBorderX;
     private float boxWidth;
@@ -41,6 +42,7 @@ public class Box : MonoBehaviour
     {
         if (slide && transform.position.x < targetPosX)
             transform.position += slideSpeed * Time.deltaTime * Vector3.right;
+        else isStopped = true;
 
         if (remainingVolume < 0)
             boxStatus = BoxStatus.OverFilled;
@@ -62,9 +64,9 @@ public class Box : MonoBehaviour
         if (boxStatus.Equals(BoxStatus.Filled))
         {
             CloseBox();
-            gameController.Win();
+            StartCoroutine(gameController.Win());
         }
-        else gameController.Lost(boxStatus);
+        else StartCoroutine(gameController.Lost(boxStatus));
 
     }
 

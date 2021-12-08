@@ -1,31 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Threading.Tasks;
 
 public class GameController : MonoBehaviour
 {
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private GameObject pLineTile;
     [SerializeField] private Transform pLine;
+
     [SerializeField] private GameObject progressBar;
     [SerializeField] private GameObject playerObj;
     [SerializeField] private GameObject levelOverMenu;
+    [SerializeField] private GameObject reaction;
     [SerializeField] private Transform canvas;
     [SerializeField] private List<GameObject> objects;
-    [SerializeField] [Range(0 , 10f)] private float gameSpeed=1f;
+    [SerializeField] [Range(0, 10f)] private float gameSpeed;
+
     private Player player;
     private List<GameObject> boxes;
+    private int numberOfBoxes;
     private List<GameObject> pLineTiles;
     private LevelConfig levelConfig;
     private LevelController levelController;
-    private int playableNumberOfBoxes;
+
+    public void SpeedUp()
+    {
+        gameSpeed = 2;
+
+    }
+    public void SlowDown()
+    {
+        gameSpeed = 1;
+    }
+
     private float tileWidth;
     private float boxWidth;
 
     void Awake()
     {
+        gameSpeed = 1f;
+        SpeedUp();
+
         boxWidth = boxPrefab.transform.GetChild(0).GetComponent<MeshRenderer>().bounds.size.x;
         tileWidth = pLineTile.GetComponent<MeshRenderer>().bounds.size.x;
 
@@ -45,6 +63,7 @@ public class GameController : MonoBehaviour
         this.levelController = levelController;
         levelConfig = levelController.currentLevelConfig;
         CreateBox(levelConfig);
+        numberOfBoxes = levelConfig.box.Count;
         CreateProductionLine();
     }
 
@@ -59,7 +78,7 @@ public class GameController : MonoBehaviour
             var boxObj = Instantiate(boxPrefab);
             boxObj.name = $"Box{i}";
             boxObj.GetComponent<Box>().slideSpeed = levelConfig.gameSpeed;
-            boxObj.GetComponent<Box>().index = (levelConfig.box.Count-1) - i;
+            boxObj.GetComponent<Box>().index = (levelConfig.box.Count - 1) - i;
             Transform boxTransform = boxObj.transform;
             boxTransform.position = boxStartPos;
 
@@ -74,7 +93,6 @@ public class GameController : MonoBehaviour
             }
             boxes.Add(boxObj);
         }
-        playableNumberOfBoxes = boxes.Count;
     }
 
 
@@ -100,9 +118,10 @@ public class GameController : MonoBehaviour
     }
 
 
-    public void Lost(BoxStatus boxStatus)
+    public IEnumerator Lost(BoxStatus boxStatus)
     {
-        playableNumberOfBoxes--;
+        CreateReaction("Oh no!");
+
         if (boxStatus.Equals(BoxStatus.Empty))
         {
             Debug.Log("Objects are broken");
@@ -113,23 +132,51 @@ public class GameController : MonoBehaviour
             Debug.Log("Box cant be closed");
             player.LoseMoney();
         }
-        if (playableNumberOfBoxes == 0)
+
+        numberOfBoxes--;
+        if (numberOfBoxes == 0)
+        {
+            SpeedUp();
+            while (AreBoxesStopped() == false)
+                yield return null;
             LevelOver();
+        }
     }
 
 
-    public void Win()
+    public IEnumerator Win()
     {
-        playableNumberOfBoxes--;
+        CreateReaction("Keep it up!");
+
         Debug.Log("Box is filled successfully");
         player.WinMoney();
-        if (playableNumberOfBoxes == 0)
+
+        numberOfBoxes--;
+        if (numberOfBoxes == 0)
+        {
+            SpeedUp();
+            while (AreBoxesStopped() == false)
+                yield return null;
             LevelOver();
+        }
     }
+
+    private bool AreBoxesStopped()
+    {
+        bool result = true;
+        foreach (var item in boxes)
+        {
+            if (!item.GetComponent<Box>().isStopped)
+                result = false;
+        }
+        return result;
+    }
+
+
 
     public void LevelOver()
     {
-        // ShowMenu();
+        ShowMenu();
     }
 
     private void ShowMenu()
@@ -154,5 +201,37 @@ public class GameController : MonoBehaviour
 
         Destroy(GameObject.Find("Nozzle"));
         Destroy(progressBar);
+    }
+
+    private void CreateReaction(string reactionText)
+    {
+        var r = Instantiate(reaction, canvas);
+        r.GetComponent<RectTransform>().localPosition = GetRandomReactionPos();
+
+        r.GetComponentInChildren<Text>().text = reactionText;
+        StartCoroutine(GoBehindCamera(r));
+    }
+
+    private Vector3 GetRandomReactionPos()
+    {
+        var screenWidth = Screen.width * 0.5f;
+        var screenHeight = Screen.height * 0.5f;
+        float x = Random.Range(-screenWidth / 2, screenWidth / 2);
+        float y = Random.Range(-screenHeight / 2, screenHeight / 2);
+        return new Vector3(x, y, 0);
+    }
+
+    private IEnumerator GoBehindCamera(GameObject g)
+    {
+        var targetPos = new Vector3(0, 0, -3000f);
+        float seconds = 3f;
+        float t = 0f;
+        while (t <= 1.0)
+        {
+            t += Time.deltaTime / seconds;
+            g.GetComponent<RectTransform>().localPosition = Vector3.Lerp(g.GetComponent<RectTransform>().localPosition, targetPos, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        Destroy(g);
     }
 }

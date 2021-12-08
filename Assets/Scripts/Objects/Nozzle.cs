@@ -26,7 +26,7 @@ public class Nozzle : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            CreateFoam();
+            CreateFoam(2);
             ps.Emit(1);
 
             if (moveDownwards)
@@ -37,17 +37,20 @@ public class Nozzle : MonoBehaviour
             StartCoroutine(MoveUpwards());
     }
 
-    private void CreateFoam()
+    private void CreateFoam(int piece)
     {
-        var foam = Instantiate(foamPrefab);
-        foam.transform.localPosition = GetFoamPos();
-        foam.name = "foam";
+        for (int i = 0; i < piece; i++)
+        {
+            var foam = Instantiate(foamPrefab);
+            foam.transform.localPosition = GetFoamPos();
+            foam.name = "foam";
+        }
     }
 
     private Vector3 GetFoamPos()
     {
-        var x = Random.Range(-0.2f, 0.2f);
-        var z = Random.Range(-0.2f, 0.2f);
+        var x = Random.Range(-0.145f, 0.145f);
+        var z = Random.Range(-0.387f, 0.387f);
         return new Vector3(x, 1f, z);
     }
 
