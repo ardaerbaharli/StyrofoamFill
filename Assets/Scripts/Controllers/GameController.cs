@@ -30,12 +30,15 @@ public class GameController : MonoBehaviour
     private LevelController levelController;
 
 
-
+    public bool isGameOver;
     private float tileWidth;
     private float boxWidth;
 
     void Awake()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+
         gameSpeed = 1f;
         SpeedUp();
 
@@ -172,6 +175,7 @@ public class GameController : MonoBehaviour
 
     public IEnumerator LevelOver()
     {
+        isGameOver = true;
         DestroyOrStopGameObjects();
 
         foreach (var box in showCaseBoxes)

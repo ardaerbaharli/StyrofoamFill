@@ -7,7 +7,7 @@ public class Box : MonoBehaviour
 {
     [SerializeField] private float remainingVolume;
     [SerializeField] private GameObject foamParent;
-    public readonly float MaxVolume = 500f;
+    public readonly float MaxVolume = 400f;
     public float slideSpeed;
     public float index;
 

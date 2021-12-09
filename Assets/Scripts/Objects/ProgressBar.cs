@@ -14,7 +14,7 @@ public class ProgressBar : MonoBehaviour
         slider.value = 0;
         targetProgress = 0;
         fillerImage.color = Color.yellow;
-        fillSpeed = 2.5f;
+        fillSpeed = 6f;
         currentValue = targetProgress;
     }
     private void Awake()
