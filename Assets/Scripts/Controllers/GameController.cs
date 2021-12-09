@@ -297,7 +297,7 @@ public class GameController : MonoBehaviour
     private Vector3 GetRandomReactionPos()
     {
         var xOffset = Screen.width * 0.8f;
-        var yOffset = Screen.height * 0.8f;
+        var yOffset = Screen.height * 0.81f;
         float x = Random.Range(-xOffset / 2, xOffset / 2);
         float y = Random.Range(-yOffset / 2, yOffset / 2);
         return new Vector3(x, y, 0);
