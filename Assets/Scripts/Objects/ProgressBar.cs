@@ -30,11 +30,7 @@ public class ProgressBar : MonoBehaviour
     public void IncrementValue(float newProgress)
     {
         currentValue += newProgress;
-        targetProgress = currentValue;
-        if (currentValue >= slider.maxValue)
-            fillerImage.color = Color.red;
-        else if (currentValue > slider.maxValue * 0.9f)
-            fillerImage.color = Color.green;
+        targetProgress = currentValue;       
     }
 
     private void Update()
@@ -43,5 +39,10 @@ public class ProgressBar : MonoBehaviour
         {
             slider.value += fillSpeed;
         }
+
+        if (slider.value >= slider.maxValue)
+            fillerImage.color = Color.red;
+        else if (slider.value > slider.maxValue * 0.9f)
+            fillerImage.color = Color.green;
     }
 }

@@ -12,7 +12,7 @@ public class FoamCounter : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name.Equals("foam"))
+        if (other.name.Equals("Foam"))
         {
             other.transform.SetParent(foamHolder);
             var foamVolume = other.GetComponent<Foam>().Volume;

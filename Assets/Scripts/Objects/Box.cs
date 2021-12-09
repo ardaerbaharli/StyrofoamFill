@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Box : MonoBehaviour
 {
     [SerializeField] private float remainingVolume;
+    [SerializeField] private GameObject foamParent;
     public readonly float MaxVolume = 500f;
     public float slideSpeed;
     public float index;
@@ -55,8 +57,11 @@ public class Box : MonoBehaviour
 
     public IEnumerator Showcase()
     {
+        // remove the foams
+
+        Destroy(foamParent);
+
         // move to the middle
-        //var startPos = transform.position;
         var targetPos = new Vector3(0, 0, 0);
 
         float seconds = 2f;
@@ -77,21 +82,7 @@ public class Box : MonoBehaviour
             yield return StartCoroutine(ShowObject(obj.gameObject, objTargetPos));
         }
 
-        yield return new WaitForSeconds(1f);
-        //// close the box
-        //CloseBox();
-        //yield return new WaitForSeconds(0.5f);
-
-        //// move to the side
-        //float t = 0f;
-        //while (t <= 1.0)
-        //{
-        //    t += Time.deltaTime / seconds;
-        //    transform.position = Vector3.Lerp(transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
-        //    yield return null;
-        //}
-        //yield return new WaitForSeconds(0.5f);
-
+        yield return new WaitForSeconds(0.2f);
     }
 
     private IEnumerator ShowObject(GameObject obj, Vector3 target)
@@ -107,7 +98,7 @@ public class Box : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
 
         var rb = obj.AddComponent<Rigidbody>();
@@ -117,13 +108,8 @@ public class Box : MonoBehaviour
 
     public void OutOfNozzleRange()
     {
-        if (boxStatus.Equals(BoxStatus.Filled))
-        {
-            //CloseBox();
-            StartCoroutine(gameController.Win(gameObject));
-        }
+        if (boxStatus.Equals(BoxStatus.Filled)) StartCoroutine(gameController.Win(gameObject));
         else StartCoroutine(gameController.Lost(boxStatus));
-
     }
 
     public IEnumerator CloseBox()
@@ -131,29 +117,52 @@ public class Box : MonoBehaviour
         var topLeft = transform.GetChild(1);
         var topRight = transform.GetChild(2);
 
-        yield return StartCoroutine(Rotate(topLeft, -359));
-        yield return StartCoroutine(Rotate(topRight, 359));
+        yield return StartCoroutine(Rotate(topLeft, topRight));
+
     }
 
-
-    private IEnumerator Rotate(Transform go, float zAngle)
+    private IEnumerator RotateLeft(Transform go)
     {
-
-        for (int i = 1; i < 5; i++)
+        float targetAnglea = -360;
+        float interval = 1f;
+        Debug.Log("left " + go.rotation.z);
+        var neededAngle = targetAnglea + 110;
+        float elapsed = 0f;
+        while (go.rotation.z >= targetAnglea + 10)
         {
-            float interval = 0.25f;
-            Quaternion startAngle = go.rotation;
-            Quaternion targetAngle = Quaternion.Euler(0, 0, zAngle / 5 - i);
-            float elapsed = 0f;
-            while (elapsed < interval)
-            {
-                go.rotation = Quaternion.Lerp(startAngle, targetAngle, elapsed / 2);
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
-            go.rotation = targetAngle;
+            elapsed += Time.deltaTime;
+            go.rotation = Quaternion.Euler(0, 0, -110 + neededAngle * (elapsed / interval));
+            if (elapsed >= interval)
+                break;
             yield return null;
         }
+        go.rotation = Quaternion.Euler(0, 0, targetAnglea);
+        yield return null;
+    }
 
+    private IEnumerator RotateRight(Transform go)
+    {
+        float targetAnglea = 360;
+        Debug.Log("right " + go.rotation.z);
+        float interval = 1f;
+        var neededAngle = targetAnglea - 110;
+        float elapsed = 0f;
+        while (go.rotation.z <= targetAnglea - 10)
+        {
+            elapsed += Time.deltaTime;
+            go.rotation = Quaternion.Euler(0, 0, 110 + neededAngle * (elapsed / interval));
+            if (elapsed >= interval)
+                break;
+            yield return null;
+        }
+        go.rotation = Quaternion.Euler(0, 0, targetAnglea);
+        yield return null;
+    }
+
+    private IEnumerator Rotate(Transform topLeft, Transform topRight)
+    {
+        StartCoroutine(RotateLeft(topLeft));
+        StartCoroutine(RotateRight(topRight));
+        yield return null;
     }
 }

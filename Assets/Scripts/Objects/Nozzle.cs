@@ -43,7 +43,7 @@ public class Nozzle : MonoBehaviour
         {
             var foam = Instantiate(foamPrefab);
             foam.transform.localPosition = GetFoamPos();
-            foam.name = "foam";
+            foam.name = "Foam";
         }
     }
 
@@ -83,5 +83,4 @@ public class Nozzle : MonoBehaviour
         }
         moveDownwards = true;
     }
-
 }

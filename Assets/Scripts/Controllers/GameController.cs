@@ -70,7 +70,7 @@ public class GameController : MonoBehaviour
         {
             var box = levelConfig.box[i];
             float boxStartPosX = -Camera.main.orthographicSize * Camera.main.aspect - boxWidth - (distanceBetweenBoxes * i);
-            var boxStartPos = new Vector3(boxStartPosX, -1.73f, 0);
+            var boxStartPos = new Vector3(boxStartPosX, -1.817f, 0);
             var boxObj = Instantiate(boxPrefab);
             boxObj.name = $"Box{i}";
             boxObj.GetComponent<Box>().slideSpeed = levelConfig.gameSpeed;
@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
 
     public IEnumerator Lost(BoxStatus boxStatus)
     {
-        CreateReaction("Oh no!");
+        CreateReaction("Oh no!", Color.red);
 
         if (boxStatus.Equals(BoxStatus.Empty))
         {
@@ -142,7 +142,7 @@ public class GameController : MonoBehaviour
 
     public IEnumerator Win(GameObject gameObject)
     {
-        CreateReaction("Keep it up!");
+        CreateReaction("Keep it up!", Color.green);
 
         showCaseBoxes.Add(gameObject);
 
@@ -178,14 +178,16 @@ public class GameController : MonoBehaviour
         {
             var startPos = box.transform.position;
 
+            Slower();
+
             yield return StartCoroutine(box.GetComponent<Box>().Showcase());
             yield return StartCoroutine(PrintNameOnTheBox(box));
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             // close the box
             StartCoroutine(box.GetComponent<Box>().CloseBox());
 
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0.5f);
 
             // move to the side
             float seconds = 2f;
@@ -223,8 +225,6 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(1f);
-
         // collect objects names
         string label = "";
         var objects = box.transform.GetChild(box.transform.childCount - 1);
@@ -245,7 +245,7 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         // go back
         seconds = 2f;
@@ -256,7 +256,7 @@ public class GameController : MonoBehaviour
             printer.transform.position = Vector3.Lerp(printer.transform.position, startPos, Mathf.SmoothStep(0f, 1f, t));
             yield return null;
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         Destroy(printer);
 
     }
@@ -284,45 +284,37 @@ public class GameController : MonoBehaviour
         Destroy(progressBar);
     }
 
-    private void CreateReaction(string reactionText)
+    private void CreateReaction(string reactionText, Color c)
     {
         var r = Instantiate(reaction, canvas);
+        r.name = "Reaction";
         r.GetComponent<RectTransform>().localPosition = GetRandomReactionPos();
 
         r.GetComponentInChildren<Text>().text = reactionText;
-        StartCoroutine(GoBehindCamera(r));
+        r.GetComponentInChildren<Text>().color = c;       
     }
 
     private Vector3 GetRandomReactionPos()
     {
-        var screenWidth = Screen.width * 0.5f;
-        var screenHeight = Screen.height * 0.5f;
-        float x = Random.Range(-screenWidth / 2, screenWidth / 2);
-        float y = Random.Range(-screenHeight / 2, screenHeight / 2);
+        var xOffset = Screen.width * 0.8f;
+        var yOffset = Screen.height * 0.8f;
+        float x = Random.Range(-xOffset / 2, xOffset / 2);
+        float y = Random.Range(-yOffset / 2, yOffset / 2);
         return new Vector3(x, y, 0);
     }
 
-    private IEnumerator GoBehindCamera(GameObject g)
-    {
-        var targetPos = new Vector3(0, 0, -3000f);
-        float seconds = 3f;
-        float t = 0f;
-        while (t <= 1.0)
-        {
-            t += Time.deltaTime / seconds;
-            g.GetComponent<RectTransform>().localPosition = Vector3.Lerp(g.GetComponent<RectTransform>().localPosition, targetPos, Mathf.SmoothStep(0f, 1f, t));
-            yield return null;
-        }
-        Destroy(g);
-    }
+
 
     public void SpeedUp()
     {
-        gameSpeed = 2;
-
+        gameSpeed = 3f;
     }
     public void SlowDown()
     {
-        gameSpeed = 1;
+        gameSpeed = 1.5f;
+    }
+    public void Slower()
+    {
+        gameSpeed = 1f;
     }
 }
