@@ -3,4 +3,4 @@
 
 Prototype for an Upwork client.
 
-<a href="https://ardaerbaharli.github.io/prototypes/styrofoam-fill/"> Here</a>
+<a href="ardaerbaharli.github.io/portfolio/small-games#styrofoamFill/"> Here</a>
